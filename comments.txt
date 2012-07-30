@@ -1,0 +1,6 @@
+Formhandler is a way for people more unfamiliar with HTML to produce HTML forms
+using a little PHP and a particular syntax.
+
+ <%formstart>
+  <%{text = \"RadioStation\"}{inputtype = \"text\"}{ name= \"RadioStation\"}{ value=\"anything\"}>
+<%formfinish>
