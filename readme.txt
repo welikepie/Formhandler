@@ -13,5 +13,8 @@ using a little PHP and a particular syntax.
     Value; what the button defaults to (or what textboxes are filled with).
 <%formfinish>
     Demarkation to finish the form creation process and to add a "submit" button.
+    
+To use, simply drop in to your htmldocs directory, and use tester.php as a template to handle forms using aforementioned syntax,
+taking care to escape quotations with backslashes as a function argument.
 
 Have fun, and any further questions, feel free to email at alex@welikepie.com
