@@ -32,6 +32,7 @@ function currentPage() {
     return $pageURL;
 }
 
+/*
 function pageRead(&$markup) {
     global $forminstances;
     $regex = "/<%formstart\b[^>]*>.*?<%formfinish>/is";
@@ -48,42 +49,34 @@ function pageRead(&$markup) {
      //  str_replace($forminstances[$key], formwrangler($forminstances[$key]), $markup);
        print_r(formwrangler($forminstances[$key]));
        print_r(formwrangler($markup));
-       if(strval($forminstances[$key])==strval($markup)){print_r("iwin");}
+	//       if(strval($forminstances[$key])==strval($markup)){print_r("iwin");}
     //print_r($forminstances[$key]);
     }
     //deal with returned html here. Go through html and replace form mockup with client-ey stuff.
   // print_r($markup);
 }
+*/
 
 //formwrangler converts form from pseudotagging to HTML.
 function formwrangler(&$form) {
     global $forminfo;
-//clear arrays type and value
-    $form = str_replace(" ", "", strval($form));
-    // print_r($form);
-    $forminfo = array();
-    $htmlform = "";
-    $form = substr($form, strlen('<%formstart>'), strlen($form) - strlen('<%formfinish>'));
-    $htmlform.= "<FORM ACTION = \"/amroche/formhandler/tester.php \" METHOD = \"POST\" CLASS=\"FORM\">";
-    preg_match_all("/(?<=\{).*?(?=})/is", $form, $forminfo);
+    $form = str_replace(" ", "", strval($form)); //remove whitespace from input to make input uniform
+    $forminfo = array(); //clear arrays type and value
+    $htmlform = ""; //setting htmlform string to empty
+    $form = substr($form, strlen('<%formstart>'), strlen($form) - strlen('<%formfinish>')); //Remove formstart and formfinish for processing
+    $htmlform.= "<FORM ACTION = \"/amroche/formhandler/tester.php \" METHOD = \"POST\" CLASS=\"FORM\">"; //append form beginning for HTML form
+    preg_match_all("/(?<=\{).*?(?=})/is", $form, $forminfo); //match form values against regular expression extracting from between{} and dumping to array
     foreach (new RecursiveIteratorIterator(new RecursiveArrayIterator($forminfo)) as $k => $v) {
-        $forminfo[$k] = $v;
+        $forminfo[$k] = $v; //dropping 2d to 1d array.
     }
     
-//print_r(sizeof($forminfo)+"sizeof");
     foreach ($forminfo as $key => &$info) {
-       // print_r($key);   
-        $exploder = explode("=", $info);
-        //print_r($exploder[0]."=".$exploder[1]);
-//print_r($forminfo[$key]);     
-//   print_r($exploder);
-        if($exploder[0]=="text" && ($exploder[0]."=".$exploder[1] == $forminfo[0])){
-        $htmlform.= substr($exploder[1],1,strlen($exploder[1])-2)."<";    
-        
-//print_r(strval($htmlform));
+        $exploder = explode("=", $info); //exploding each array item on an equals sign.
+        if($exploder[0]=="text" && ($exploder[0]."=".$exploder[1] == $forminfo[0])){ //checking for possible values of exploded text.
+        $htmlform.= substr($exploder[1],1,strlen($exploder[1])-2)."<";    //if first, add text then <
         }
         if($exploder[0]=="text" && ($exploder[0]."=".$exploder[1] != $forminfo[0])){
-        $htmlform.="><br>".substr($exploder[1],1,strlen($exploder[1])-2)."<";    
+        $htmlform.="><br>".substr($exploder[1],1,strlen($exploder[1])-2)."<";    //else add line break, then text, then <
         }
         
         if($exploder[0]=="inputtype"){
@@ -99,8 +92,7 @@ function formwrangler(&$form) {
         }
         
         if($key == (sizeof($forminfo)-1)){ //needs to be at end of if statements.
-           $htmlform.="/>\n<br><input type=\"submit\" value=\"Submit\"/></form>";
-        //  print_r("</form> LOL!");
+           $htmlform.="/>\n<br><input type=\"submit\" value=\"Submit\"/></form>"; //at end of form close form off and return.
         }
         
     }   

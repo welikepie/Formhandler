@@ -54,33 +54,29 @@ function sanitiseIn(&$value) {
 }
 
 function push_to_XML() {
-    try {
+    try {	
         global $xmlsurveyfile;
         if (!file_exists($xmlsurveyfile)) {
             $fileHandle = fopen($xmlsurveyfile, 'r');
             file_put_contents($xmlsurveyfile, "<root></root>", LOCK_EX);
-            fclose($fileHandle);
+            fclose($fileHandle); 
+            //if file doesn't exist, create file and write to file and save. If file already exists, it will at least contain this.
         }
         fopen($xmlsurveyfile, 'c+');
         $stringtowrite = file_get_contents($xmlsurveyfile);
-    } catch (Exception $e) {
-       // print_r('Caught exception: ' . $e->getMessage() . "\n");
-    }
-
-    $stringtowrite = substr($stringtowrite, 0, strlen($stringtowrite) - 7); //14 is length of </root>
+    } catch (Exception $e) {}
+    $stringtowrite = substr($stringtowrite, 0, strlen($stringtowrite) - 7); //14 is length of </root>, which we remove each time we open the file.
     $stringtowrite.="<form>";
     foreach ($_POST as $key => $value) {
         sanitiseIn($value);
-       // print_r("<br >" . $key . "<br>" . $value);
         $stringtowrite .= "<" . $key . ">" . $value . "</" . "$key" . ">";
     }
-    $stringtowrite.="</form>";
-    $stringtowrite.="</root>";
+    $stringtowrite.="</form></root>";
     file_put_contents($xmlsurveyfile, $stringtowrite, LOCK_EX);
 }
 
 function push_to_JSON() {
-    try {
+    try { //same constucts as push_to_XML file, just different execution owing to JSON syntax differing.
         global $jsonsurveyfile;
         if (!file_exists($jsonsurveyfile)) {
             $fileHandle = fopen($jsonsurveyfile, 'r');
@@ -106,7 +102,6 @@ function push_to_JSON() {
     }
     
     $stringtowrite = substr($stringtowrite, 0, strlen($stringtowrite) - 1);
-    //print_r($stringtowrite);
     $stringtowrite.="}}";
     file_put_contents($jsonsurveyfile, $stringtowrite, LOCK_EX);
 }

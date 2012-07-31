@@ -14,4 +14,4 @@ using a little PHP and a particular syntax.
 <%formfinish>
     Demarkation to finish the form creation process and to add a "submit" button.
 
-Have fun, and any further questions, feel free to email at alex@amroche.co.uk
+Have fun, and any further questions, feel free to email at alex@welikepie.com
